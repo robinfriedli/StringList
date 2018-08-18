@@ -6,7 +6,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>StringList</groupId>
+    <groupId>net.robinfriedli.StringList</groupId>
     <artifactId>StringList</artifactId>
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
