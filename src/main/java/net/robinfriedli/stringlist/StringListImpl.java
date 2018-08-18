@@ -1,3 +1,5 @@
+package net.robinfriedli.stringlist;
+
 import com.google.common.collect.Lists;
 
 import javax.annotation.Nonnull;
