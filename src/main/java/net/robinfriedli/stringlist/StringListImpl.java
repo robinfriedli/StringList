@@ -223,6 +223,28 @@ public class StringListImpl implements StringList {
     }
 
     @Override
+    public boolean valueAppearsBefore(int index, String s) {
+        if (index <= 0) return false;
+        return subList(0, index).contains(s);
+    }
+
+    @Override
+    public boolean valueAppearsAfter(int index, String s) {
+        if (index >= size() - 1) return false;
+        return subList(index + 1).contains(s);
+    }
+
+    @Override
+    public StringList subList(int beginIndex, int endIndex) {
+        return create(values.subList(beginIndex, endIndex));
+    }
+
+    @Override
+    public StringList subList(int beginIndex) {
+        return create(values.subList(beginIndex, size()));
+    }
+
+    @Override
     public void assertThat(Predicate<StringList> predicate, String errorMessage) throws AssertionError {
         if (!predicate.test(this)) {
             throw new AssertionError(errorMessage);
@@ -289,10 +311,8 @@ public class StringListImpl implements StringList {
         return new StringListImpl(Lists.newArrayList(strings));
     }
 
-    public static StringList create(String[] stringArray) {
-        List<String> strings = Lists.newArrayList(Arrays.asList(stringArray));
-
-        return new StringListImpl(strings);
+    public static StringList create(String... strings) {
+        return new StringListImpl(Lists.newArrayList(strings));
     }
 
     public static StringList create() {

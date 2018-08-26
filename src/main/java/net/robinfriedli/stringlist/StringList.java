@@ -195,6 +195,26 @@ public interface StringList extends Iterable<String> {
     boolean valuesSucceededBy(List<Integer> indices, String s);
 
     /**
+     * check if provided String appears before given index
+     */
+    boolean valueAppearsBefore(int index, String s);
+
+    /**
+     * check if provided String appears after given index
+     */
+    boolean valueAppearsAfter(int index, String s);
+
+    /**
+     * Create a new StringList with values from this StringList within the given range of indices
+     */
+    StringList subList(int beginIndex, int endIndex);
+
+    /**
+     * Create a new StringList with values from this StringList starting at given index
+     */
+    StringList subList(int beginIndex);
+
+    /**
      * assert that any condition from one of the StringList methods is true
      *
      * e.g stringList.assertThat(p -> p.valuePrecededBy(3, "-"), "value at 3 not preceded by -")
