@@ -261,7 +261,17 @@ public class StringListImpl implements StringList {
 
     @Override
     public StringList applyForEach(Function<String, String> action) {
-        for (int i = 0; i < size(); i++) {
+        return applyForEach(action, 0, size());
+    }
+
+    @Override
+    public StringList applyForEach(Function<String, String> action, int beginIndex) {
+        return applyForEach(action, beginIndex, size());
+    }
+
+    @Override
+    public StringList applyForEach(Function<String, String> action, int beginIndex, int endIndex) {
+        for (int i = beginIndex; i < endIndex; i++) {
             String value = get(i);
             set(i, action.apply(value));
         }

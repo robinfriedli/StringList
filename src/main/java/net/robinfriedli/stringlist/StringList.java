@@ -243,4 +243,23 @@ public interface StringList extends Iterable<String> {
      * @return this StringList
      */
     StringList applyForEach(Function<String, String> action);
+
+    /**
+     * Applies an action to each String in the list starting at index, then returns the list
+     *
+     * @param action action to apply
+     * @param beginIndex index to begin at (including)
+     * @return this StringList
+     */
+    StringList applyForEach(Function<String, String> action, int beginIndex);
+
+    /**
+     *  Applies an action to each String in the list starting at beginIndex, ending at endIndex, then returns the list
+     *
+     * @param action action to apply
+     * @param beginIndex index to begin at (including)
+     * @param endIndex index to end at (excluding)
+     * @return this StringList
+     */
+    StringList applyForEach(Function<String, String> action, int beginIndex, int endIndex);
 }
