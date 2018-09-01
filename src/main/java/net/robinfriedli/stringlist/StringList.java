@@ -3,6 +3,7 @@ package net.robinfriedli.stringlist;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -234,4 +235,12 @@ public interface StringList extends Iterable<String> {
      * @throws AssertionError if assertion fails
      */
     void assertThat(Predicate<StringList> predicate) throws AssertionError;
+
+    /**
+     * Applies an action to each String in the list, then returns the list
+     *
+     * @param action action to apply
+     * @return this StringList
+     */
+    StringList applyForEach(Consumer<String> action);
 }

@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -256,6 +257,12 @@ public class StringListImpl implements StringList {
         if (!predicate.test(this)) {
             throw new AssertionError();
         }
+    }
+
+    @Override
+    public StringList applyForEach(Consumer<String> action) {
+        this.forEach(action);
+        return this;
     }
 
     public static StringList create(String string, String regex) {
