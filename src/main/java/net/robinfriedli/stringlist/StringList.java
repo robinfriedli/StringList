@@ -3,7 +3,7 @@ package net.robinfriedli.stringlist;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -157,7 +157,7 @@ public interface StringList extends Iterable<String> {
     /**
      * find all indices of specified String within StringList
      *
-     * @param s String to find
+     * @param s          String to find
      * @param ignoreCase define if you want to find matches regardless of capitalisation
      * @return occurrences of said String
      */
@@ -167,7 +167,7 @@ public interface StringList extends Iterable<String> {
      * checks if value at index is preceded by String s
      *
      * @param index of value
-     * @param s String to check if precedes value at index
+     * @param s     String to check if precedes value at index
      */
     boolean valuePrecededBy(int index, String s);
 
@@ -175,7 +175,7 @@ public interface StringList extends Iterable<String> {
      * checks if all values at the specified indices are preceded by String s
      *
      * @param indices of values to check
-     * @param s String to check if precedes values at indices
+     * @param s       String to check if precedes values at indices
      */
     boolean valuesPrecededBy(List<Integer> indices, String s);
 
@@ -183,7 +183,7 @@ public interface StringList extends Iterable<String> {
      * checks if value at index is succeeded by String s
      *
      * @param index of value to check
-     * @param s String to check if succeeds value at index
+     * @param s     String to check if succeeds value at index
      */
     boolean valueSucceededBy(int index, String s);
 
@@ -191,7 +191,7 @@ public interface StringList extends Iterable<String> {
      * checks if all values at the specified indices are succeeded by String s
      *
      * @param indices of values to check
-     * @param s String to check if precedes values at indices
+     * @param s       String to check if precedes values at indices
      */
     boolean valuesSucceededBy(List<Integer> indices, String s);
 
@@ -217,10 +217,10 @@ public interface StringList extends Iterable<String> {
 
     /**
      * assert that any condition from one of the StringList methods is true
-     *
+     * <p>
      * e.g stringList.assertThat(p -> p.valuePrecededBy(3, "-"), "value at 3 not preceded by -")
      *
-     * @param predicate  any StringList method that returns a boolean
+     * @param predicate    any StringList method that returns a boolean
      * @param errorMessage message to throw if assertion fails
      * @throws AssertionError if assertion fails
      */
@@ -228,10 +228,10 @@ public interface StringList extends Iterable<String> {
 
     /**
      * assert that any condition from one of the StringList methods is true
-     *
+     * <p>
      * e.g stringList.assertThat(p -> p.valuePrecededBy(3, "-"))
      *
-     * @param predicate  any StringList method that returns a boolean
+     * @param predicate any StringList method that returns a boolean
      * @throws AssertionError if assertion fails
      */
     void assertThat(Predicate<StringList> predicate) throws AssertionError;
@@ -242,5 +242,5 @@ public interface StringList extends Iterable<String> {
      * @param action action to apply
      * @return this StringList
      */
-    StringList applyForEach(Consumer<String> action);
+    StringList applyForEach(Function<String, String> action);
 }

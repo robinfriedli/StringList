@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -260,8 +260,11 @@ public class StringListImpl implements StringList {
     }
 
     @Override
-    public StringList applyForEach(Consumer<String> action) {
-        this.forEach(action);
+    public StringList applyForEach(Function<String, String> action) {
+        for (int i = 0; i < size(); i++) {
+            String value = get(i);
+            set(i, action.apply(value));
+        }
         return this;
     }
 
