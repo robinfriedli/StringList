@@ -6,7 +6,7 @@ Simple utility class that provides some useful methods for dealing with Lists of
     <dependency>
       <groupId>net.robinfriedli.StringList</groupId>
       <artifactId>StringList</artifactId>
-      <version>1.0</version>
+      <version>1.1</version>
     </dependency>
 
     <repository>
