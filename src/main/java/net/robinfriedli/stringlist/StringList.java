@@ -262,4 +262,19 @@ public interface StringList extends Iterable<String> {
      * @return this StringList
      */
     StringList applyForEach(Function<String, String> action, int beginIndex, int endIndex);
+
+    /**
+     * Assert that all values in this list are unique
+     *
+     * @throws AssertionError if a duplicate value is detected
+     */
+    void assertUnique() throws AssertionError;
+
+    /**
+     * Assert that all values in this list are unique
+     *
+     * @param errorMessage error message to throw
+     * @throws AssertionError if a duplicate value is detected
+     */
+    void assertUnique(String errorMessage) throws AssertionError;
 }

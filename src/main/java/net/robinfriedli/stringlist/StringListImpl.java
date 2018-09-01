@@ -278,6 +278,32 @@ public class StringListImpl implements StringList {
         return this;
     }
 
+    @Override
+    public void assertUnique() throws AssertionError {
+        List<String> checkedValues = Lists.newArrayList();
+
+        for (String value : values) {
+            if (!checkedValues.contains(value)) {
+                checkedValues.add(value);
+            } else {
+                throw new AssertionError("Value \"" + value + "\" is not unique");
+            }
+        }
+    }
+
+    @Override
+    public void assertUnique(String errorMessage) throws AssertionError {
+        List<String> checkedValues = Lists.newArrayList();
+
+        for (String value : values) {
+            if (!checkedValues.contains(value)) {
+                checkedValues.add(value);
+            } else {
+                throw new AssertionError(errorMessage);
+            }
+        }
+    }
+
     public static StringList create(String string, String regex) {
         String[] stringList = string.split(regex);
         return create(stringList);
