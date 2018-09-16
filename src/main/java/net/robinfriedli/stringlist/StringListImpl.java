@@ -353,6 +353,10 @@ public class StringListImpl implements StringList {
         return new StringListImpl(stringList);
     }
 
+    public static StringList create(Iterable<String> strings) {
+        return new StringListImpl(Lists.newArrayList(strings));
+    }
+
     public static StringList create(Collection<String> strings) {
         return new StringListImpl(Lists.newArrayList(strings));
     }
@@ -363,6 +367,20 @@ public class StringListImpl implements StringList {
 
     public static StringList create() {
         return new StringListImpl(Lists.newArrayList());
+    }
+
+    public static <E> StringList create(E[] values, Function<E, String> getStringValues) {
+        return create(Arrays.asList(values), getStringValues);
+    }
+
+    public static <E> StringList create(Iterable<E> values, Function<E, String> getStringValues) {
+        StringList stringList = StringListImpl.create();
+
+        for (E value : values) {
+            stringList.add(getStringValues.apply(value));
+        }
+
+        return stringList;
     }
 
     public static StringList charsToList(String string) {
