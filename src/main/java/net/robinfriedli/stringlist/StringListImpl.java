@@ -4,12 +4,9 @@ import com.google.common.collect.Lists;
 
 import javax.annotation.Nonnull;
 import java.text.BreakIterator;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 public class StringListImpl implements StringList {
@@ -45,11 +42,7 @@ public class StringListImpl implements StringList {
 
     @Override
     public boolean contains(Object o) {
-        if (o instanceof String) {
-            return values.contains(o);
-        } else {
-            return false;
-        }
+        return values.contains(o);
     }
 
     @Override
@@ -70,45 +63,43 @@ public class StringListImpl implements StringList {
     }
 
     @Override
+    public <T> T[] toArray(T[] a) {
+        return values.toArray(a);
+    }
+
+    @Override
     public boolean add(String s) {
         return values.add(s);
     }
 
     @Override
-    public boolean addAll(List<String> strings) {
-        return values.addAll(strings);
+    public boolean remove(Object o) {
+        return values.remove(o);
     }
 
     @Override
-    public boolean remove(String s) {
-        return values.remove(s);
+    public boolean addAll(Collection<? extends String> c) {
+        return values.addAll(c);
     }
 
     @Override
-    public boolean removeAll(String s) {
-        boolean modified = false;
-
-        while (values.contains(s)) {
-            values.remove(s);
-            modified = true;
-        }
-
-        return modified;
+    public boolean addAll(int index, Collection<? extends String> c) {
+        return values.addAll(index, c);
     }
 
     @Override
-    public boolean removeAll(List<String> strings) {
-        return values.removeAll(strings);
+    public boolean removeAll(Collection<?> c) {
+        return values.removeAll(c);
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        return values.retainAll(c);
     }
 
     @Override
     public void clear() {
         values.clear();
-    }
-
-    @Override
-    public boolean retainAll(List<String> strings) {
-        return values.retainAll(strings);
     }
 
     @Override
@@ -148,8 +139,38 @@ public class StringListImpl implements StringList {
     }
 
     @Override
-    public void set(int index, String value) {
-        values.set(index, value);
+    public String set(int index, String value) {
+        return values.set(index, value);
+    }
+
+    @Override
+    public void add(int index, String element) {
+        values.add(index, element);
+    }
+
+    @Override
+    public String remove(int index) {
+        return values.remove(index);
+    }
+
+    @Override
+    public int indexOf(Object o) {
+        return values.indexOf(o);
+    }
+
+    @Override
+    public int lastIndexOf(Object o) {
+        return values.lastIndexOf(o);
+    }
+
+    @Override
+    public ListIterator<String> listIterator() {
+        return values.listIterator();
+    }
+
+    @Override
+    public ListIterator<String> listIterator(int index) {
+        return values.listIterator(index);
     }
 
     @Override
@@ -418,6 +439,38 @@ public class StringListImpl implements StringList {
         }
 
         return stringList;
+    }
+
+    public static Collector<String, ?, StringList> collector() {
+        return new Collector<String, Object, StringList>() {
+            @Override
+            public Supplier<Object> supplier() {
+                return StringListImpl::create;
+            }
+
+            @Override
+            public BiConsumer<Object, String> accumulator() {
+                return (o, s) -> ((StringList) o).add(s);
+            }
+
+            @Override
+            public BinaryOperator<Object> combiner() {
+                return (o, o2) -> {
+                    ((StringList) o).addAll((StringList) o2);
+                    return o;
+                };
+            }
+
+            @Override
+            public Function<Object, StringList> finisher() {
+                return o -> (StringList) o;
+            }
+
+            @Override
+            public Set<Characteristics> characteristics() {
+                return Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH));
+            }
+        };
     }
 
     private Character[] stringToCharacterArray(String string) {
