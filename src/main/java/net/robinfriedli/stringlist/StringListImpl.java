@@ -1,11 +1,8 @@
 package net.robinfriedli.stringlist;
 
 import com.google.common.collect.Lists;
-import org.checkerframework.checker.units.qual.C;
 
 import javax.annotation.Nonnull;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.text.BreakIterator;
 import java.util.*;
 import java.util.function.*;
@@ -271,29 +268,15 @@ public class StringListImpl implements StringList {
 
     @Override
     public void assertThat(Predicate<StringList> predicate, String errorMessage) throws AssertionError {
-        if (predicate.negate().test(this)) {
+        if (!predicate.test(this)) {
             throw new AssertionError(errorMessage);
         }
     }
 
     @Override
     public void assertThat(Predicate<StringList> predicate) throws AssertionError {
-        if (predicate.negate().test(this)) {
+        if (!predicate.test(this)) {
             throw new AssertionError();
-        }
-    }
-
-    @Override
-    public <E extends Throwable> void assertThat(Predicate<StringList> predicate, String errorMessage, Class<E> throwable) throws E {
-        if (predicate.negate().test(this)) {
-            throw instantiate(throwable, new Class[]{String.class}, new Object[]{errorMessage});
-        }
-    }
-
-    @Override
-    public <E extends Throwable> void assertThat(Predicate<StringList> predicate, Class<E> throwable) throws E {
-        if (predicate.negate().test(this)) {
-            throw instantiate(throwable);
         }
     }
 
@@ -318,7 +301,6 @@ public class StringListImpl implements StringList {
 
     @Override
     public void assertUnique() throws AssertionError {
-        // cannot use the assertUnique(Class) method because AssertionError uses an Object instead of a String as message
         List<String> checkedValues = Lists.newArrayList();
 
         for (String value : values) {
@@ -332,7 +314,6 @@ public class StringListImpl implements StringList {
 
     @Override
     public void assertUnique(String errorMessage) throws AssertionError {
-        // cannot use the assertUnique(Class) method because AssertionError uses an Object instead of a String as message
         List<String> checkedValues = Lists.newArrayList();
 
         for (String value : values) {
@@ -342,48 +323,6 @@ public class StringListImpl implements StringList {
                 throw new AssertionError(errorMessage);
             }
         }
-    }
-
-    @Override
-    public <E extends Throwable> void assertUnique(Class<E> type) throws E {
-        List<String> checkedValues = Lists.newArrayList();
-
-        for (String value : values) {
-            if (!checkedValues.contains(value)) {
-                checkedValues.add(value);
-            } else {
-                String message = String.format("Value '%s' is not unique", value);
-                throw instantiate(type, new Class[]{String.class}, new Object[]{message});
-            }
-        }
-    }
-
-    @Override
-    public <E extends Throwable> void assertUnique(String errorMessage, Class<E> type) throws E {
-        List<String> checkedValues = Lists.newArrayList();
-
-        for (String value : values) {
-            if (!checkedValues.contains(value)) {
-                checkedValues.add(value);
-            } else {
-                throw instantiate(type, new Class[]{String.class}, new Object[]{errorMessage});
-            }
-        }
-    }
-
-    @Override
-    public boolean allMatch(Predicate<String> predicate) {
-        return stream().allMatch(predicate);
-    }
-
-    @Override
-    public boolean anyMatch(Predicate<String> predicate) {
-        return stream().anyMatch(predicate);
-    }
-
-    @Override
-    public boolean noneMatch(Predicate<String> predicate) {
-        return stream().noneMatch(predicate);
     }
 
     public static StringList create(String string, String regex) {
@@ -404,24 +343,31 @@ public class StringListImpl implements StringList {
     }
 
     public static StringList createSentences(String input) {
-        return create(BreakIterator.getSentenceInstance(), input);
+        List<String> sentences = Lists.newArrayList();
+
+        BreakIterator iterator = BreakIterator.getSentenceInstance();
+        iterator.setText(input);
+        int start = iterator.first();
+
+        for (int end = iterator.next(); end != BreakIterator.DONE; start = end, end = iterator.next()) {
+            sentences.add(input.substring(start, end));
+        }
+
+        return create(sentences);
     }
 
     public static StringList createWords(String input) {
-        return create(BreakIterator.getWordInstance(), input);
-    }
+        List<String> words = Lists.newArrayList();
 
-    public static StringList create(BreakIterator breakIterator, String text) {
-        StringList stringList = create();
+        BreakIterator iterator = BreakIterator.getWordInstance();
+        iterator.setText(input);
+        int start = iterator.first();
 
-        breakIterator.setText(text);
-        int start = breakIterator.first();
-
-        for (int end = breakIterator.next(); end != BreakIterator.DONE; start = end, end = breakIterator.next()) {
-            stringList.add(text.substring(start, end));
+        for (int end = iterator.next(); end != BreakIterator.DONE; start = end, end = iterator.next()) {
+            words.add(input.substring(start, end));
         }
 
-        return stringList;
+        return create(words);
     }
 
     public static StringList create(List<String> stringList) {
@@ -525,38 +471,6 @@ public class StringListImpl implements StringList {
                 return Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH));
             }
         };
-    }
-
-    private <E> E instantiate(Class<E> type) {
-        return instantiate(type, new Class[0], new Object[0]);
-    }
-
-    private <E> E instantiate(Class<E> type, Class[] argumentTypes, Object[] arguments) {
-        if (argumentTypes.length != arguments.length) {
-            throw new IllegalArgumentException("Not the same number if argument types and arguments provided");
-        }
-
-        for (int i = 0; i < argumentTypes.length; i++) {
-            Class classToCheck = argumentTypes[i];
-            Object argument = arguments[i];
-            if (!classToCheck.isInstance(argument)) {
-                throw new IllegalArgumentException("Type mismatch in provided arguments. "
-                        + argument.getClass().getSimpleName() + " is not an instance of " + classToCheck.getSimpleName());
-            }
-        }
-
-        try {
-            Constructor<E> constructor = type.getConstructor(argumentTypes);
-            return constructor.newInstance(arguments);
-        } catch (NoSuchMethodException e) {
-            throw new IllegalStateException("No matching constructor available. Class " + type.getSimpleName() + " could not be instantiated.", e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Cannot access constructor. Class " + type.getSimpleName() + " could not be instantiated.", e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException("Cannot instantiate class " + type.getSimpleName(), e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException("Exception while invoking constructor of class " + type.getSimpleName(), e);
-        }
     }
 
     private Character[] stringToCharacterArray(String string) {

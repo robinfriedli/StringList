@@ -134,16 +134,6 @@ public interface StringList extends List<String> {
     void assertThat(Predicate<StringList> predicate) throws AssertionError;
 
     /**
-     * like {@link #assertThat(Predicate)} but allows to throw a custom exception
-     */
-    <E extends Throwable> void assertThat(Predicate<StringList> predicate, Class<E> throwable) throws E;
-
-    /**
-     * like {@link #assertThat(Predicate, String)} but allows to throw a custom exception
-     */
-    <E extends Throwable> void assertThat(Predicate<StringList> predicate, String errorMessage, Class<E> throwable) throws E;
-
-    /**
      * Applies an action to each String in the list, then returns the list
      *
      * @param action action to apply
@@ -184,33 +174,4 @@ public interface StringList extends List<String> {
      * @throws AssertionError if a duplicate value is detected
      */
     void assertUnique(String errorMessage) throws AssertionError;
-
-    /**
-     * like {@link #assertUnique()} but allows to throw a custom exception
-     */
-    <E extends Throwable> void assertUnique(Class<E> throwable) throws E;
-
-    /**
-     * like {@link #assertUnique(String)} but allows to throw a custom exception
-     */
-    <E extends Throwable> void assertUnique(String errorMessage, Class<E> throwable) throws E;
-
-    /**
-     * @param predicate the predicate to test
-     * @return true if all elements in this list match the given predicate
-     */
-    boolean allMatch(Predicate<String> predicate);
-
-    /**
-     * @param predicate the predicate to test
-     * @return true if any element in this list matches the given predicate
-     */
-    boolean anyMatch(Predicate<String> predicate);
-
-    /**
-     *
-     * @param predicate the predicate to test
-     * @return true if no element in this list matches the given predicate
-     */
-    boolean noneMatch(Predicate<String> predicate);
 }
