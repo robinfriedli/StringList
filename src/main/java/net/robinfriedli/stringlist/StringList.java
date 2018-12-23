@@ -1,6 +1,7 @@
 package net.robinfriedli.stringlist;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -18,6 +19,16 @@ public interface StringList extends List<String> {
     String tryGet(int index);
 
     /**
+     * Like {@link List#contains(Object)} but optionally ignores the case of the compared string
+     */
+    boolean contains(Object o, boolean ignoreCase);
+
+    /**
+     * Like {@link List#containsAll(Collection)} but optionally ignores the case of the compared string
+     */
+    boolean containsAll(Collection c, boolean ignoreCase);
+
+    /**
      * @return StringList values as String
      */
     String toString();
@@ -32,6 +43,16 @@ public interface StringList extends List<String> {
      * @return StringList values as List
      */
     List<String> getValues();
+
+    /**
+     * Like {@link List#indexOf(Object)} but optionally ignores the case of the compared string
+     */
+    int indexOf(Object o, boolean ignoreCase);
+
+    /**
+     * Like {@link List#lastIndexOf(Object)} but optionally ignores the case of the compared string
+     */
+    int lastIndexOf(Object o, boolean ignoreCase);
 
     /**
      * Retain values that only contain letters

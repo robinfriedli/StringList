@@ -1,7 +1,6 @@
 package net.robinfriedli.stringlist;
 
 import com.google.common.collect.Lists;
-import org.checkerframework.checker.units.qual.C;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Constructor;
@@ -46,6 +45,16 @@ public class StringListImpl implements StringList {
     @Override
     public boolean contains(Object o) {
         return values.contains(o);
+    }
+
+    @Override
+    public boolean contains(Object o, boolean ignoreCase) {
+        if (ignoreCase && o instanceof String) {
+            String s = (String) o;
+            return values.stream().anyMatch(v -> v.equalsIgnoreCase(s));
+        } else {
+            return contains(o);
+        }
     }
 
     @Override
@@ -110,6 +119,12 @@ public class StringListImpl implements StringList {
         return values.containsAll(c);
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean containsAll(Collection c, boolean ignoreCase) {
+        return c.stream().anyMatch(o -> contains(o, ignoreCase));
+    }
+
     @Override
     public List<String> getValues() {
         return values;
@@ -162,8 +177,40 @@ public class StringListImpl implements StringList {
     }
 
     @Override
+    public int indexOf(Object o, boolean ignoreCase) {
+        if (ignoreCase && o instanceof String) {
+            for (int i = 0; i < size(); i++) {
+                if (values.get(i).equalsIgnoreCase((String) o)) {
+                    return i;
+                }
+            }
+
+            return -1;
+        } else {
+            return indexOf(o);
+        }
+    }
+
+    @Override
     public int lastIndexOf(Object o) {
         return values.lastIndexOf(o);
+    }
+
+    @Override
+    public int lastIndexOf(Object o, boolean ignoreCase) {
+        if (ignoreCase && o instanceof String) {
+            if (!isEmpty()) {
+                for (int i = size() - 1; i >= 0; i--) {
+                    if (values.get(i).equalsIgnoreCase((String) o)) {
+                        return i;
+                    }
+                }
+            }
+
+            return -1;
+        } else {
+            return lastIndexOf(o);
+        }
     }
 
     @Override
