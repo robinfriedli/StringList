@@ -1,28 +1,39 @@
 plugins {
-    id 'java'
-    id 'maven-publish'
+    id "java"
+    id "maven-publish"
+    id "com.jfrog.bintray" version "1.8.4"
 }
 
 repositories {
     mavenLocal()
     maven {
-        url = 'http://repo.maven.apache.org/maven2'
+        url = "http://repo.maven.apache.org/maven2"
     }
 }
 
 dependencies {
-    compile 'com.google.guava:guava:25.1-jre'
+    compile "com.google.guava:guava:25.1-jre"
 }
 
-group = 'net.robinfriedli.StringList'
-version = '1.5'
-description = 'StringList'
-sourceCompatibility = '8'
+group = "net.robinfriedli"
+version = "1.5"
+description = "StringList"
+sourceCompatibility = "8"
 
 publishing {
     publications {
         maven(MavenPublication) {
             from(components.java)
         }
+    }
+}
+
+bintray {
+    user = "bintray_user"
+    key = "bintray_api_key"
+    publications = ['maven']
+    pkg {
+        repo = rootProject.group
+        name = "StringList"
     }
 }
