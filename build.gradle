@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = 'http://repo.maven.apache.org/maven2'
+    }
+}
+
+dependencies {
+    compile 'com.google.guava:guava:25.1-jre'
+}
+
+group = 'net.robinfriedli.StringList'
+version = '1.5'
+description = 'StringList'
+sourceCompatibility = '8'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
