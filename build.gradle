@@ -20,10 +20,20 @@ version = "1.5"
 description = "StringList"
 sourceCompatibility = "8"
 
+task sourceJar(type: Jar) {
+    classifier 'sources'
+    from sourceSets.main.allJava
+}
+
 publishing {
     publications {
         maven(MavenPublication) {
+            groupId rootProject.group
+            artifactId "StringList"
+
             from(components.java)
+
+            artifact tasks.sourceJar
         }
     }
 }
