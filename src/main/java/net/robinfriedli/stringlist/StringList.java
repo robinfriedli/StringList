@@ -26,7 +26,7 @@ public interface StringList extends List<String> {
     /**
      * Like {@link List#containsAll(Collection)} but optionally ignores the case of the compared string
      */
-    boolean containsAll(Collection<?> c, boolean ignoreCase);
+    boolean containsAll(Collection c, boolean ignoreCase);
 
     /**
      * @return StringList values as String

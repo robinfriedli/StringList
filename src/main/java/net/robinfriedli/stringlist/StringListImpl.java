@@ -9,6 +9,7 @@ import java.text.BreakIterator;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 public class StringListImpl implements StringList {
 
@@ -114,14 +115,14 @@ public class StringListImpl implements StringList {
     }
 
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(Collection c) {
         return values.containsAll(c);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean containsAll(Collection c, boolean ignoreCase) {
-        return c.stream().allMatch(o -> contains(o, ignoreCase));
+        return c.stream().anyMatch(o -> contains(o, ignoreCase));
     }
 
     @Override
@@ -432,9 +433,9 @@ public class StringListImpl implements StringList {
         return stream().noneMatch(predicate);
     }
 
-    public static StringList createWithRegex(String string, String regex) {
+    public static StringList create(String string, String regex) {
         String[] stringList = string.split(regex);
-        return of(stringList);
+        return create(stringList);
     }
 
     public static StringList separateString(String string, String regex) {
@@ -449,11 +450,11 @@ public class StringListImpl implements StringList {
         return stringList;
     }
 
-    public static StringList splitSentences(String input) {
+    public static StringList createSentences(String input) {
         return create(BreakIterator.getSentenceInstance(), input);
     }
 
-    public static StringList splitWords(String input) {
+    public static StringList createWords(String input) {
         return create(BreakIterator.getWordInstance(), input);
     }
 
@@ -470,10 +471,7 @@ public class StringListImpl implements StringList {
         return stringList;
     }
 
-    /**
-     * Creates a new StringList using the provided List as internal store, meaning changes made to this StringList will affect the provided list
-     */
-    public static StringList shareList(List<String> stringList) {
+    public static StringList create(List<String> stringList) {
         return new StringListImpl(stringList);
     }
 
@@ -485,7 +483,7 @@ public class StringListImpl implements StringList {
         return new StringListImpl(Lists.newArrayList(strings));
     }
 
-    public static StringList of(String... strings) {
+    public static StringList create(String... strings) {
         return new StringListImpl(Lists.newArrayList(strings));
     }
 
@@ -507,13 +505,17 @@ public class StringListImpl implements StringList {
         return stringList;
     }
 
-    public static StringList splitChars(String string) {
+    public static StringList charsToList(String string) {
         List<String> charsAsString = Lists.newArrayList();
         for (Character character : string.toCharArray()) {
             charsAsString.add(character.toString());
         }
 
         return create(charsAsString);
+    }
+
+    public Stream<String> stream() {
+        return values.stream();
     }
 
     public static List<String> getAllValues(StringList... stringLists) {
