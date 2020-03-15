@@ -5,10 +5,9 @@ import com.google.common.collect.Lists;
 import javax.annotation.Nonnull;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.text.BreakIterator;
 import java.util.*;
-import java.util.function.*;
-import java.util.stream.Collector;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class StringListImpl implements StringList {
 
@@ -224,7 +223,7 @@ public class StringListImpl implements StringList {
 
     @Override
     public StringList filterWords() {
-        StringList stringList = create();
+        StringList stringList = StringList.create();
         for (String value : values) {
             Character[] chars = stringToCharacterArray(value);
             if (Arrays.stream(chars).allMatch(Character::isLetter)) {
@@ -307,12 +306,12 @@ public class StringListImpl implements StringList {
 
     @Override
     public StringList subList(int beginIndex, int endIndex) {
-        return create(values.subList(beginIndex, endIndex));
+        return StringList.create(values.subList(beginIndex, endIndex));
     }
 
     @Override
     public StringList subList(int beginIndex) {
-        return create(values.subList(beginIndex, size()));
+        return StringList.create(values.subList(beginIndex, size()));
     }
 
     @Override
@@ -430,146 +429,6 @@ public class StringListImpl implements StringList {
     @Override
     public boolean noneMatch(Predicate<String> predicate) {
         return stream().noneMatch(predicate);
-    }
-
-    public static StringList createWithRegex(String string, String regex) {
-        String[] stringList = string.split(regex);
-        return of(stringList);
-    }
-
-    public static StringList separateString(String string, String regex) {
-        String[] strings = string.split(regex);
-        StringList stringList = new StringListImpl(Lists.newArrayList());
-
-        for (int i = 0; i < strings.length; i++) {
-            stringList.add(strings[i]);
-            if (i < strings.length - 1) stringList.add(regex);
-        }
-
-        return stringList;
-    }
-
-    public static StringList splitSentences(String input) {
-        return create(BreakIterator.getSentenceInstance(), input);
-    }
-
-    public static StringList splitWords(String input) {
-        return create(BreakIterator.getWordInstance(), input);
-    }
-
-    public static StringList create(BreakIterator breakIterator, String text) {
-        StringList stringList = create();
-
-        breakIterator.setText(text);
-        int start = breakIterator.first();
-
-        for (int end = breakIterator.next(); end != BreakIterator.DONE; start = end, end = breakIterator.next()) {
-            stringList.add(text.substring(start, end));
-        }
-
-        return stringList;
-    }
-
-    /**
-     * Creates a new StringList using the provided List as internal store, meaning changes made to this StringList will affect the provided list
-     */
-    public static StringList shareList(List<String> stringList) {
-        return new StringListImpl(stringList);
-    }
-
-    public static StringList create(Iterable<String> strings) {
-        return new StringListImpl(Lists.newArrayList(strings));
-    }
-
-    public static StringList create(Collection<String> strings) {
-        return new StringListImpl(Lists.newArrayList(strings));
-    }
-
-    public static StringList of(String... strings) {
-        return new StringListImpl(Lists.newArrayList(strings));
-    }
-
-    public static StringList create() {
-        return new StringListImpl(Lists.newArrayList());
-    }
-
-    public static <E> StringList create(E[] values, Function<E, String> getStringValues) {
-        return create(Arrays.asList(values), getStringValues);
-    }
-
-    public static <E> StringList create(Iterable<E> values, Function<E, String> getStringValues) {
-        StringList stringList = StringListImpl.create();
-
-        for (E value : values) {
-            stringList.add(getStringValues.apply(value));
-        }
-
-        return stringList;
-    }
-
-    public static StringList splitChars(String string) {
-        List<String> charsAsString = Lists.newArrayList();
-        for (Character character : string.toCharArray()) {
-            charsAsString.add(character.toString());
-        }
-
-        return create(charsAsString);
-    }
-
-    public static List<String> getAllValues(StringList... stringLists) {
-        List<String> values = Lists.newArrayList();
-        for (StringList stringList : stringLists) {
-            values.addAll(stringList.getValues());
-        }
-        return values;
-    }
-
-    public static StringList join(StringList... stringLists) {
-        List<String> values = getAllValues(stringLists);
-        return StringListImpl.create(values);
-    }
-
-    @SafeVarargs
-    public static StringList join(List<String>... lists) {
-        StringList stringList = StringListImpl.create();
-
-        for (List<String> list : lists) {
-            stringList.addAll(list);
-        }
-
-        return stringList;
-    }
-
-    public static Collector<String, ?, StringList> collector() {
-        return new Collector<String, Object, StringList>() {
-            @Override
-            public Supplier<Object> supplier() {
-                return StringListImpl::create;
-            }
-
-            @Override
-            public BiConsumer<Object, String> accumulator() {
-                return (o, s) -> ((StringList) o).add(s);
-            }
-
-            @Override
-            public BinaryOperator<Object> combiner() {
-                return (o, o2) -> {
-                    ((StringList) o).addAll((StringList) o2);
-                    return o;
-                };
-            }
-
-            @Override
-            public Function<Object, StringList> finisher() {
-                return o -> (StringList) o;
-            }
-
-            @Override
-            public Set<Characteristics> characteristics() {
-                return Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH));
-            }
-        };
     }
 
     private <E> E instantiate(Class<E> type) {
