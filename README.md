@@ -6,7 +6,7 @@ Simple utility class that provides some useful methods for dealing with Lists of
     <dependency>
       <groupId>net.robinfriedli</groupId>
       <artifactId>StringList</artifactId>
-      <version>1.5</version>
+      <version>1.6</version>
       <type>pom</type>
     </dependency>
 
@@ -20,7 +20,7 @@ Simple utility class that provides some useful methods for dealing with Lists of
 ## Gradle
 ```gradle
     dependencies {
-        compile 'net.robinfriedli:StringList:1.5'
+        compile 'net.robinfriedli:StringList:1.6'
     }
 
     repositories {
