@@ -4,27 +4,26 @@ Simple utility class that provides some useful methods for dealing with Lists of
 ## Maven
 ```xml
     <dependency>
-      <groupId>net.robinfriedli</groupId>
+      <groupId>com.github.robinfriedli</groupId>
       <artifactId>StringList</artifactId>
-      <version>1.6</version>
+      <version>1.6.1</version>
       <type>pom</type>
     </dependency>
 
     <repository>
-        <id>jcenter</id>
-        <name>jcenter-bintray</name>
-        <url>https://jcenter.bintray.com</url>
+        <name>com.github.robinfriedli</name>
+        <url>https://jitpack.io</url>
     </repository>
 ```
 
 ## Gradle
 ```gradle
     dependencies {
-        compile 'net.robinfriedli:StringList:1.6'
+        compile 'com.github.robinfriedli:StringList:1.6.1'
     }
 
     repositories {
-        jcenter()
+        maven { url 'https://jitpack.io' }
     }
 ```
 

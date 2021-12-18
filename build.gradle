@@ -1,7 +1,6 @@
 plugins {
     id "java"
     id "maven-publish"
-    id "com.jfrog.bintray" version "1.8.4"
 }
 
 repositories {
@@ -9,11 +8,11 @@ repositories {
 }
 
 dependencies {
-    compile "com.google.guava:guava:25.1-jre"
+    implementation "com.google.guava:guava:31.0.1-jre"
 }
 
 group = "net.robinfriedli"
-version = "1.6"
+version = "1.6.1"
 description = "StringList"
 sourceCompatibility = "8"
 
@@ -32,15 +31,5 @@ publishing {
 
             artifact tasks.sourceJar
         }
-    }
-}
-
-bintray {
-    user = "bintray_user"
-    key = "bintray_api_key"
-    publications = ['maven']
-    pkg {
-        repo = rootProject.group
-        name = "StringList"
     }
 }
